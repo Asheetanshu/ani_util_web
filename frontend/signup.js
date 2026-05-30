@@ -32,28 +32,36 @@ function reveal_fun(event){
 async function check_input(event){
   event.preventDefault();
   const uname = document.getElementById('uname').value;
+  const ogpasswd = document.getElementById('passwd_og').value;
   const passwd = document.getElementById('passwd').value;
+  const email = document.getElementById('email').value;
   const lgst = document.getElementById('login_status');
 
 
-  if (uname === "" || passwd === ""){
+  if (uname === "" || passwd === "" || email === "" || ogpasswd === ""){
     lgst.style.color = "var(--wine-plum)";
-    lgst.innerText = "Error: Please fill out both username and password.";
+    lgst.innerText = "Error: Please fill out all the feilds";
     return;
-  }
-  else if (!is_valid_uname(uname)){
+  }else if (!is_valid_uname(uname)){
     lgst.style.color = "var(--wine-plum)";
     lgst.innerText = `Error: Username should only contain\n(a to z\t,A to Z\t,0 to 9)\n{char limit : 16}`;
     return;
-  }
-  else if (!is_valid_passwd(passwd)){
+  }else if (!is_valid_passwd(ogpasswd)){
     lgst.style.color = "var(--wine-plum)";
     lgst.innerText = `Error: Password should only contain\n(a to z\t,A to Z\t,0 to 9\tOr Special charecters "!@#$%^&*")\n{char limit : 32}`;
     return;
+  }else if (!is_valid_passwd(passwd)){
+    lgst.style.color = "var(--wine-plum)";
+    lgst.innerText = `Error: Confirm Password should only contain\n(a to z\t,A to Z\t,0 to 9\tOr Special charecters "!@#$%^&*")\n{char limit : 32}`;
+    return;
+  }else if (ogpasswd !== passwd){
+    lgst.style.color = "var(--pearl-beige)";
+    lgst.innerText = `Error: Password and Confirm Password Must Be same`;
+    return;
   }else {
-    console.log(`Username:"${uname}"\nPassword:"${passwd}"\n`)
+    console.log(`Username:"${uname}"\nPassword:"${passwd}"\nEmail:"${email}"\n`)
     try{
-      const response = await fetch("http://127.0.0.1:6769/login" , {
+      const response = await fetch("http://127.0.0.1:6769/signup" , {
         method : "POST",
         headers : {
           "Content-type" : "application/json"
@@ -62,49 +70,52 @@ async function check_input(event){
           {
             uname : uname,
             passwd : passwd,
+            email : email,
           }
         )
       });
 
       const reply = await response.text();
-      if (reply === "1"){                                         // username & password both correct 
+      if (reply === "1"){                                         // username & email valid 
         lgst.style.color = "var(--green)";
-        lgst.innerText = `You exist in my system.Login Successfull`;
-      }else if (reply === "2"){                                   // username only correct
+        lgst.innerHTML = `SignUp successfull.<a href="./login.html" style ="color : var(--pearl-beige); text-decoration : underline;">Login now</a>`;
+      }else if (reply === "2"){                                   // username not unique
         lgst.style.color = "var(--pearl-beige)";
-        lgst.innerHTML = 
-        `Wrong Password | Try again or <a href="./reset.html"  
-        style = "color : var(--pearl-beige); text-decoration : underline;">
-          Reset Password</a>`;                                    // this reset page doesn't exist yet
-      }else if (reply === "3"){                                                      // nothing correct try to create account
+        lgst.innerHTML = `Username not unique . Try again or <a href="./login.html" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
+      }else if (reply === "3"){                                   // email not unique
         lgst.style.color = "var(--wine-plum)";
-        lgst.innerHTML = `Username does not exists. Consider \n <a href="./signup.html" 
-        style = "color : var(--pearl-beige); text-decoration : underline;">Creating an Account</a>.`;
-      }else {
+        lgst.innerHTML = `Email not unique. User already exists <a href="./login.html" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
+      }else{
         lgst.style.color = "var(--wine-plum)";
-        lgst.innerText = `Error : "${reply}"`;
+        lgst.innerText = `Internal Error : "${reply}"`;
       }
     }catch(network_error){
       lgst.style.color = "var(--wine-plum)";
       lgst.innerText = `Network error "${network_error}"`;
     }
+    return;
   }
 }
 
 
 const lform = document.querySelector("form");
 lform.addEventListener("submit" , check_input);
-
 const uname_input = document.getElementById('uname');
 const passwd_input = document.getElementById('passwd');
+const email_input = document.getElementById('email');
 const lgst_input = document.getElementById('login_status');
-
+const ogpasswd_input = document.getElementById('passwd_og');
 uname_input.addEventListener("input" , function(){
   lgst_input.innerText = "";
 });
 passwd_input.addEventListener("input" , function(){
   lgst_input.innerText = "";
 });
-
+email_input.addEventListener("input" , function(){
+  lgst_input.innerText = "";
+});
+ogpasswd_input.addEventListener("input" , function(){
+  lgst_input.innerText = "";
+});
 const reveal_but = document.getElementById("reveal");
 reveal_but.onclick=reveal_fun;
