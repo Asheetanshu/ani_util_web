@@ -70,6 +70,7 @@ async function check_input(event){
       if (reply === "1"){                                         // username & password both correct 
         lgst.style.color = "var(--green)";
         lgst.innerText = `You exist in my system.Login Successfull`;
+        window.location.href = "./home.html"
       }else if (reply === "2"){                                   // username only correct
         lgst.style.color = "var(--pearl-beige)";
         lgst.innerHTML = 

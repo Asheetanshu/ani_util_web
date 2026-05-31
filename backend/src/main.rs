@@ -34,7 +34,7 @@ async fn main(){
 
     let pool = match SqlitePoolOptions::new()
         .max_connections(5)
-        .connect("sqlite://user.db").await{
+        .connect("sqlite:data/user.db").await{
             Ok(p) => p,
             Err(error) => {
                 println!("The connection to the db cannot be made : {}", error);
