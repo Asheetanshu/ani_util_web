@@ -5,5 +5,39 @@
     <title title="A website to link ani-cli and web technologies">Home | Ani-Util</title>
   </head>
   <body>
+    <nav>
+      <button id="ham_menu_button">
+        <svg id="ham_menu_icon_svg" width="40px" height="40px" viewBox="0 0 24 24" fill="none">
+          <path d="M4 18L20 18 M4 12L20 12 M4 6L20 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div id="search_collection_wrapper">
+        <form id="search_collection">
+          <button>
+            <svg id="search_icon_svg" height="30px" width="30px" viewBox="0 0 451 451">
+              <path d="M447.05,428l-109.6-109.6c29.4-33.8,47.2-77.9,47.2-126.1C384.65,86.2,298.35,0,192.35,0C86.25,0,0.05,86.3,0.05,192.3 s86.3,192.3,192.3,192.3c48.2,0,92.3-17.8,126.1-47.2L428.05,447c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4 C452.25,441.8,452.25,433.2,447.05,428z M26.95,192.3c0-91.2,74.2-165.3,165.3-165.3c91.2,0,165.3,74.2,165.3,165.3 s-74.1,165.4-165.3,165.4C101.15,357.7,26.95,283.5,26.95,192.3z" fill="currentColor"/>
+            </svg>
+          </button>
+          <input id="ani_search_input" placeholder ="Search...">
+        </form>
+      </div>
+      <div id="profile_wrapper"></div> <!--- need a pop up for this to appear with a few buttons -->
+    </nav>
+    <div id="banner_wrapper">
+      <img src="./assets/img1.jpg">
+    </div>
+    <div id="main_content_wrapper">
+      <div id="sidebar_wrapper" class="sidebar_hidden">
+        <aside id="sidebar">
+          <ul>
+            <a href="./home.html"><h4>Home</h4></a>
+            <a href="./home.html"><h4>Recent</h4></a>
+          </ul>
+        </aside>
+      </div>
+      <div id="anime_grid">
+      </div>
+    </div>
+    <script src="./home.js"> </script>
   </body>
 </html>
