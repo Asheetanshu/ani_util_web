@@ -51,17 +51,19 @@ async fn main(){
         ); "
     ).execute(&pool)
         .await{
-            Ok(ele) => ele, 
+            Ok(_) => (), 
             Err(error) => {
                 println!("Well well something went wrong here : {}", error);
                 return;
             }
         };
+
     let app = Router::new()
         .route("/login" , post(login_handler))
         .route("/signup" , post(signup_handler))
         .layer(CorsLayer::permissive())
         .with_state(pool);
+
     let listener  = match tokio::net::TcpListener::bind("127.0.0.1:6769").await{
         Ok(ele) => ele ,
         Err(error) => {
@@ -69,44 +71,41 @@ async fn main(){
             return;
         }
     };
-    match axum::serve(listener , app).await{
-        Ok(()) => (),
-        Err(error) => {
-            println!("This error : {}",error);
-            return;
-        },
+
+    if let Err(error) = axum::serve(listener , app).await{
+        println!("This error : {}",error);
+        return;
     }
+
     return;
 }
 
 async fn login_handler( State(pool) : State<sqlx::SqlitePool> , Json(lreq) :  Json<LoginReq>) -> String{
     println!("Req with\nUsername : {}\nPassword : {}\n",lreq.uname , lreq.passwd);
-    match query(
-        " SELECT passwd FROM users WHERE uname = ? "
-    ).bind(&lreq.uname)
+    match query("SELECT passwd FROM users WHERE uname = ?;")
+        .bind(&lreq.uname)
         .fetch_optional(&pool)
-        .await{
-            Ok(ele) =>{
-                match ele {
-                    Some(row) => {
-                        let db_pass : String = row.get("passwd");
-                        if db_pass == lreq.passwd {
-                            "1".to_string()
-                        }else{
-                            "2".to_string()
-                        }
-                    },
-                    None => {
-                        "3".to_string()
-                    },
+        .await
+        {
+            Ok(Some(row)) =>{
+                let db_pass : String = row.get("passwd");
+                if db_pass == lreq.passwd {
+                    "1".to_string()
+                }else{
+                    "2".to_string()
                 }
+            },
+            Ok(None)=> {
+                "3".to_string()
             },
             Err(error) => {
                 println!("The db crashed : {}",error);
                 error.to_string()
             },
         }
+
 }
+
 
 
 async fn signup_handler(State(pool) : State<sqlx::SqlitePool> , Json(siupreq) : Json<SiupReq>) -> String{
@@ -148,6 +147,6 @@ async fn signup_handler(State(pool) : State<sqlx::SqlitePool> , Json(siupreq) : 
     if let Err(error) = insertq{
         return error.to_string();
     }
-    // verify id here... i guess idk yet but we will do this later stage of the project
+    // verify email id here with otp thing idk... i guess idk yet but we will do this later stage of the project
     "1".to_string()
 }

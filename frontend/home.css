@@ -63,6 +63,7 @@ form:hover , form:focus{
 #banner_wrapper img{
   width : 100%;
   height : 100%;
+  border-radius : 8px; 
   object-fit : cover;
   -webkit-mask-image : linear-gradient(to left , rgba(0 , 0 , 0 , 1) 10% , rgba(0 , 0 , 0 , 0 ) 80%);
   mask-image : linear-gradient(to left, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 80%);
