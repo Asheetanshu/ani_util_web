@@ -1,0 +1,137 @@
+:root{
+  --carbon-black: #202022ff;
+  --wine-plum: #73313dff;
+  --bright-snow: #f8f6f7ff;
+  --pearl-beige: #e2d3b4ff;
+  --shadow-grey: #272935ff;
+  --eye-grey: #3f3f3fff;
+  --green : #99cf5bff;
+}
+
+
+body{
+  height : 100vh;
+  width : 100vw;
+  margin : 0;
+  display : flex;
+  background : var(--shadow-grey);
+  flex-direction : column;
+  justify-content : center;
+  align-items : center;
+}
+form{
+  display : flex;
+  flex-direction : column;
+  align-items : center;
+  margin-top : 40vh;
+  padding : 40px;
+  border-radius : 8px;
+}
+
+input{
+  font-family : "Georgia";
+  width: 20vw;
+  padding : 10px;
+  outline : none;
+  border : none;
+  border-radius : 8px;
+  margin-bottom : 5px;
+  background : var(--shadow-grey);
+  color : var(--pearl-beige);
+}
+
+input:hover , input:focus{
+  outline : none;
+  box-shadow: 0 0 2px 2px var(--wine-plum);
+}
+
+#passwd_collection {
+  position : relative;
+  display : flex;
+  flex-direction : row;
+
+}
+#passwd{
+  margin-left : 55px;
+  width : 20vw;
+}
+
+button{
+  font-family : "Georgia";
+  font-style : "bold";
+  font-size : 24px;
+  padding : 8px;
+  border-radius : 8px;
+  margin-top : 10px;
+  outline : none;
+  border : none;
+  cursor : pointer;
+  display : flex;
+  flex-direction : column;
+  align-items : center;
+  justify-content : center;
+  background : var(--shadow-grey);
+}
+
+#lgbut{
+  padding : 8px;
+  border-radius : 8px;
+  margin-top : 20px;
+  background : linear-gradient(to top, var(--pearl-beige) , var(--bright-snow)) ;
+  -webkit-background-clip : text;
+  -webkit-text-fill-color : transparent;
+  background-clip : text;
+}
+#lgbut:hover , #lgbut:focus{
+  outline : none;
+  box-shadow : 0 0 2px 2px var(--wine-plum);
+}
+#banner {
+  position : absolute;
+  top : 0;
+  left : 0;
+  width : 100vw;
+  height : 50vh;
+  z-index : -1;
+}
+
+#reveal{
+  margin-top : 0;
+  margin-left : 20px;
+  padding : 0px;
+}
+#reveal_img{
+  width : 35px;
+  height : auto;
+}
+
+#banner img{
+  width : 100%;
+  height : 100%;
+  object-fit : cover;
+  -webkit-mask-image : linear-gradient(to bottom , rgba(0 , 0 , 0 , 1) 40% , rgba(0 , 0 , 0 , 0 ) 100%);
+  mask-image : linear-gradient(to bottom, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
+}
+
+#reveal svg{
+  color : var(--eye-grey);
+  transition : color 0.1s ease-in;
+}
+#reveal:hover svg, #reveal:focus svg{
+  color : var(--pearl-beige);
+}
+
+#login_status{
+  color : var(--wine-plum);
+  font-family : "Georgia";
+  font-style : "bold";
+  font-size : 16px;
+  height : 35px;
+  margin-top : 2px;
+  margin-bottom : 4px;
+  text-align : center;
+}
+
+#login_status a{
+  color : var(--pearl-beige);
+}

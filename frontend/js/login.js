@@ -53,7 +53,7 @@ async function check_input(event){
   }else {
     console.log(`Username:"${uname}"\nPassword:"${passwd}"\n`)
     try{
-      const response = await fetch("http://127.0.0.1:6769/login" , {
+      const response = await fetch("http://127.0.0.1:6769/app/login" , {
         method : "POST",
         headers : {
           "Content-type" : "application/json"
@@ -70,16 +70,16 @@ async function check_input(event){
       if (reply === "1"){                                         // username & password both correct 
         lgst.style.color = "var(--green)";
         lgst.innerText = `You exist in my system.Login Successfull`;
-        window.location.href = "./home.html"
+        window.location.href = "/"
       }else if (reply === "2"){                                   // username only correct
         lgst.style.color = "var(--pearl-beige)";
         lgst.innerHTML = 
-        `Wrong Password | Try again or <a href="./reset.html"  
+        `Wrong Password | Try again or <a href="/reset"  
         style = "color : var(--pearl-beige); text-decoration : underline;">
           Reset Password</a>`;                                    // this reset page doesn't exist yet
       }else if (reply === "3"){                                                      // nothing correct try to create account
         lgst.style.color = "var(--wine-plum)";
-        lgst.innerHTML = `Username does not exists. Consider \n <a href="./signup.html" 
+        lgst.innerHTML = `Username does not exists. Consider \n <a href="/signup" 
         style = "color : var(--pearl-beige); text-decoration : underline;">Creating an Account</a>.`;
       }else {
         lgst.style.color = "var(--wine-plum)";
@@ -101,10 +101,10 @@ const passwd_input = document.getElementById('passwd');
 const lgst_input = document.getElementById('login_status');
 
 uname_input.addEventListener("input" , function(){
-  lgst_input.innerText = "";
+  lgst_input.innerHTML = `Don't have an Account? <a href ="/signup">Sign Up</a>`;
 });
 passwd_input.addEventListener("input" , function(){
-  lgst_input.innerText = "";
+  lgst_input.innerHTML = `Don't have an Account? <a href ="/signup">Sign Up</a>`;
 });
 
 const reveal_but = document.getElementById("reveal");

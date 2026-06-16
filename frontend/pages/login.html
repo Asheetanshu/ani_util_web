@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="./signup.css">
-    <title title="A website to link ani-cli and web technologies">Sign Up | Ani Util</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <title title="A website to link ani-cli and web technologies">Login | Ani Util</title>
   </head>
   <body>
     <div id="banner">
-      <img src="./assets/img1.jpg" alt="Splash Image">
+      <img src="/assets/img1.jpg" alt="Splash Image">
     </div>
     <form>
-      <input id="uname" placeholder="Username" title="Please enter your Username">
-      <input id="passwd_og" placeholder="Password" title="Please enter your Password" type="password">
+      <input id="uname" placeholder="Username" title="Please enter your Username" required>
       <div id="passwd_collection">
-        <input id="passwd" placeholder="Confirm Password" title="Please enter your Confirm Password" type="password">
+        <input id="passwd" placeholder="Password" title="Please enter your Password" type="password" required>
         <button type="button" id="reveal">
           <svg id="eye_svg" width="35px" height="35px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4.71 3.29a1 1 0 0 0-1.42 1.42l5.63 5.63a3.5 3.5 0 0 0 4.74 4.74l5.63 5.63a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM12 13.5a1.5 1.5 0 0 1-1.5-1.5v-.07l1.56 1.56z" fill="currentColor"/>
@@ -21,10 +20,9 @@
           </svg>
         </button>
       </div>
-      <input id="email" placeholder="Email" title="Please enter your Email">
-      <p id="login_status"></p>
-      <button type="submit" id="lgbut"><span id="lgbut_l">SIGN UP</span></button>
+      <p id="login_status"> Don't have an Account? <a href ="./signup">Sign Up</a></p>
+      <button type="submit" id="lgbut"><span id="lgbut_l">LOGIN</span></button>
     </form>
-    <script src="./signup.js"></script>
+    <script src="/js/login.js"></script>
   </body>
 </html>

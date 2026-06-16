@@ -131,3 +131,7 @@ button{
   margin-bottom : 4px;
   text-align : center;
 }
+
+#login_status a{
+  color : var(--pearl-beige);
+}

@@ -17,20 +17,20 @@ nav{
   display : flex;
   flex-direction : row;
   overflow : hidden;
-  width : 100vw;
+  width : 100%;
   padding : 8px;
   padding-bottom : 16px;
   border-radius : 4px;
-  background : linear-gradient(to bottom , rgba(0, 0, 0, 0) 80% , rgba(0 , 0 , 0 , 0.5));
+  box-shadow : 0 4px 5px 2px var(--wine-plum);
 }
+
 body{
   height : 100vh;
   width : 100vw;
   margin : 0;
   display : flex;
   background : var(--shadow-grey);
-  flex-direction : column;
-  justify-content : flex-start;
+  flex-direction : row;
   align-items : center;
 }
 button{
@@ -51,10 +51,20 @@ ul{
 form:hover , form:focus{
   box-shadow : 0px 0px 20px 3px var(--wine-plum);
 }
+main{
+  display : flex;
+  flex-direction : column;
+  justify-content : flex-start;
+  height : 100vh;
+  width : 100%;
+  overflow-y : auto;
+  
+}
 #banner_wrapper{
   margin-top : 30px;
   border-radius : 8px;
-  width : 95vw;
+  margin-left : 30px;
+  width : 95%;
   height : 50vh;
   background : var(--carbon-black);
   overflow : hidden;
@@ -75,13 +85,8 @@ form:hover , form:focus{
   display : flex;
   flex-direction : row;
   margin-top : 20px;
-  width : 100vw;
-}
-#sidebar_wrapper{
-  max-width : 200px;
-}
-.sidebar_hidden{
-  width : 0px;
+  width : 100%;
+  flex-grow : 1;
   overflow : hidden;
 }
 #anime_grid{
@@ -91,9 +96,13 @@ form:hover , form:focus{
 #search_collection{
   display : flex;
   flex-direction : row;
+  margin-left = 30px;
   margin-top : 8px;
   padding : 8px;
   border-radius : 8px;
+}
+#search_icon_svg{
+  padding-top : 0px;
 }
 #search_collection:hover , #search_collection:focus-within{
   box-shadow : 0px 0px 4px 1px var(--wine-plum);
@@ -107,6 +116,9 @@ form:hover , form:focus{
 #search_collection:focus-within #search_icon_svg , #search_collection:hover #search_icon_svg{
   color : var(--pearl-beige);
 }
+#ham_menu_button{
+  margin-top : 20px;
+}
 #ham_menu_button:hover , #ham_menu_button:focus{
   color : var(--pearl-beige);
 }
@@ -115,4 +127,50 @@ form:hover , form:focus{
   width : 40px;
   height : 40px;
   border-radius : 50%;
+}
+#sidebar_section{
+  width : 70px;
+  height : 100vh;
+  flex-shrink : 0;
+  max-width : 60vw;
+  transition : all 0.2s ease-out;
+  overflow : hidden;
+  display : flex;
+  flex-direction : column;
+  align-items : center;
+}
+#sidebar a {
+  white-space : nowrap;
+  display : flex;
+  align-items : center;
+  text-decoration : none;
+  color : var(--pearl-beige);
+  margin-bottom : 24px;
+}
+
+#sidebar a:hover,#sidebar a:focus-within{
+  fill : currentColor;
+}
+#sidebar svg{
+  flex-shrink : 0;
+  height : 35px;
+  width : 35px;
+}
+.nav_item{
+  display : flex;
+  flex-direction : row;
+  align-items : center;
+}
+.sidebar_p{
+
+}
+.sidebar_expanded {
+  width : 250px !important;
+  background : var(--eyegrey) !important;
+  
+  /* what i want here is to let the icons stay at the same place but when the thing expand they sort or attach to right side of the icons . So i have to think or you can help me step into the right direction*/
+}
+
+.sidebar_expanded .sidebar_p{
+  
 }

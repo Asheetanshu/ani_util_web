@@ -61,7 +61,7 @@ async function check_input(event){
   }else {
     console.log(`Username:"${uname}"\nPassword:"${passwd}"\nEmail:"${email}"\n`)
     try{
-      const response = await fetch("http://127.0.0.1:6769/signup" , {
+      const response = await fetch("http://127.0.0.1:6769/app/signup" , {
         method : "POST",
         headers : {
           "Content-type" : "application/json"
@@ -78,13 +78,13 @@ async function check_input(event){
       const reply = await response.text();
       if (reply === "1"){                                         // username & email valid 
         lgst.style.color = "var(--green)";
-        lgst.innerHTML = `SignUp successfull.<a href="./login.html" style ="color : var(--pearl-beige); text-decoration : underline;">Login now</a>`;
+        lgst.innerHTML = `SignUp successfull.<a href="/login" style ="color : var(--pearl-beige); text-decoration : underline;">Login now</a>`;
       }else if (reply === "2"){                                   // username not unique
         lgst.style.color = "var(--pearl-beige)";
-        lgst.innerHTML = `Username not unique . Try again or <a href="./login.html" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
+        lgst.innerHTML = `Username not unique . Try again or <a href="/login" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
       }else if (reply === "3"){                                   // email not unique
         lgst.style.color = "var(--wine-plum)";
-        lgst.innerHTML = `Email not unique. User already exists <a href="./login.html" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
+        lgst.innerHTML = `Email not unique. User already exists <a href="/login" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
       }else{
         lgst.style.color = "var(--wine-plum)";
         lgst.innerText = `Internal Error : "${reply}"`;
@@ -106,16 +106,16 @@ const email_input = document.getElementById('email');
 const lgst_input = document.getElementById('login_status');
 const ogpasswd_input = document.getElementById('passwd_og');
 uname_input.addEventListener("input" , function(){
-  lgst_input.innerText = "";
+  lgst_input.innerHTML = `Already have an Account ? <a href="/login">Login</a>`
 });
 passwd_input.addEventListener("input" , function(){
-  lgst_input.innerText = "";
+  lgst_input.innerHTML = `Already have an Account ? <a href="/login">Login</a>`
 });
 email_input.addEventListener("input" , function(){
-  lgst_input.innerText = "";
+  lgst_input.innerHTML = `Already have an Account ? <a href="/login">Login</a>`
 });
 ogpasswd_input.addEventListener("input" , function(){
-  lgst_input.innerText = "";
+  lgst_input.innerHTML = `Already have an Account ? <a href="/login">Login</a>`
 });
 const reveal_but = document.getElementById("reveal");
 reveal_but.onclick=reveal_fun;
