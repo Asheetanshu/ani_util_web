@@ -1,8 +1,7 @@
 mod auth;
-use sqlx::{
-    query, 
-    sqlite::SqlitePoolOptions,
-};
+mod ani_meta;
+mod db;
+
 use axum::{
     Router,
     routing::post
@@ -20,50 +19,32 @@ use auth::{
     reset_handler,
 };
 
+use db::{
+    init_pool,
+    init_db,
+};
+
+use ani_meta::{
+    ani_search,
+};
+
 
 #[tokio::main]
 async fn main() {
 
-    let pool = match SqlitePoolOptions::new()
-        .max_connections(5)
-        .connect("sqlite:data/user.db")
-        .await
-        {
-            Ok(p) => p,
-            Err(error) => {
-                println!("The connection to the db cannot be made : {}", error);
-                return;
-            }
-        };
+    let pool = match init_pool("sqlite:data/main.db").await
+    {
+        Ok(ele) => ele,
+        Err(error) => {
+            println!("{}" , error);
+            return;
+        }
+    };
 
-    if let Err(error) = query(
-        "CREATE TABLE IF NOT EXISTS users(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            uname varchar(16) NOT NULL UNIQUE,
-            passwd varchar(256) NOT NULL DEFAULT 0,
-            email varchar(128) NOT NULL UNIQUE
-        ); ",
-    )
-        .execute(&pool)
-            .await{
-                println!("Well well something went wrong here : {}", error);
-                return;
-    }
-
-    if let Err(error) = query(
-        "CREATE TABLE IF NOT EXISTS passwd_reset(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email varchar(128) NOT NULL UNIQUE,
-            attempts INTEGER CHECK (attempts IN (0, 1, 2, 3, 4, 5)) DEFAULT 0,
-            expiry DATETIME NOT NULL,
-            otp varchar(6) NOT NULL
-        );")
-        .execute(&pool)
-            .await{
-                println!("passwd_reset table not available here : {}", error);
-                return;
-    }
-
+    if let Err(error) = init_db(&pool).await{
+        println!("{}" , error);
+        return;
+    };
 
     let app = Router::new()
         .route_service("/" , ServeFile::new("../frontend/pages/index.html"))
@@ -75,11 +56,14 @@ async fn main() {
         .route("/app/login", post(login_handler))
         .route("/app/signup", post(signup_handler))
         .route("/app/reset", post(reset_handler))
+        .route("/app/ani_search", post(ani_search))
         .fallback_service(ServeDir::new("../frontend"))
         .layer(CorsLayer::permissive())
         .with_state(pool);
 
     let port_thing = "127.0.0.1:6769";
+
+//    let _ = ani_meta::get_api_response().await;
 
     let listener = match tokio::net::TcpListener::bind(port_thing).await {
         Ok(ele) => ele,
@@ -110,4 +94,3 @@ fn make_hyprlink(text : &str , link : &str) -> String{
         text
     )
 }
-

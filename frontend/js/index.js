@@ -11,5 +11,37 @@ function ham_menu(){
   `
 
 }
+
+async function ani_search(event){
+  event.preventDefault();
+  const srchq = document.getElementById("ani_search_input").value;
+  if (srchq === ""){
+    srchq.focus;
+    console.log("I guess it is focused");
+    return;
+
+  }
+  try {
+    const response = await fetch("http://127.0.0.1:6769/app/ani_search",{
+      method : "POST",
+      headers : {
+        "Content-type" : "application/json"
+      },
+      body: JSON.stringify(
+        {
+          querry : srchq,
+        }
+      )
+    });
+    const reply = await response.text();
+    console.log(reply);
+  }catch (error){
+    console.log(`Error : ${error}`);
+
+  }
+}
+
 const ham_but = document.getElementById("ham_menu_button");
+const ani_srch = document.querySelector("form");
+ani_srch.addEventListener("submit" , ani_search);
 ham_but.onclick = ham_menu;
