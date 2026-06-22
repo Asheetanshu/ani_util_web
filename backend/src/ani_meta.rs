@@ -1,4 +1,3 @@
-
 use reqwest::{
     Client,
 };
@@ -14,28 +13,24 @@ use axum::{
     Json,
     extract::State,
 };
-
 use crate::db::{
     insert_ani_details,
     search_ani_title,
     insert_learned_title,
 };
-
 #[derive(Deserialize , Debug)]
-#[allow(dead_code , unused_variables)]
+#[allow(dead_code)]
 pub struct Response{
     pub data : Data,
 }
-
 #[derive(Deserialize , Debug)]
-#[allow(dead_code , unused_variables)]
+#[allow(dead_code)]
 pub struct Data{
     #[serde(rename = "Media")]
     pub media : AniDetails,
 }
-
 #[derive(Deserialize , Debug)]
-#[allow(dead_code , unused_variables)]
+#[allow(dead_code)]
 pub struct AniDetails{
     pub id : i64,
     #[serde(rename = "episodes")]
@@ -49,30 +44,33 @@ pub struct AniDetails{
     #[serde(rename = "coverImage")]
     pub cimg : CoverImage,
     pub genres : Vec<String>,
+    #[serde(rename = "startDate")]
+    pub start_date : Date,
 }
-
-
 #[derive(Deserialize , Debug)]
-#[allow(dead_code , unused_variables)]
+#[allow(dead_code)]
 pub struct AniTitle{
     pub english : Option<String>,
     pub romaji : Option<String>,
     pub native : Option<String>
 }
-
 #[derive(Deserialize , Debug)]
-#[allow(dead_code , unused_variables)]
+#[allow(dead_code)]
 pub struct CoverImage{
     #[serde(rename = "extraLarge")]
     pub extra_large : String,
 }
-
+#[derive(Deserialize , Debug)]
+#[allow(dead_code)]
+pub struct Date{
+    pub year : Option<i64>,
+    pub month : Option<i64>,
+    pub day : Option<i64>,
+}
 #[derive(Deserialize , Debug)]
 pub struct Squerry{
     querry : String,
 }
-
-
 impl AniTitle{
     pub fn iter(&self) -> impl Iterator<Item = (&'static str , &str)>{
         [
@@ -83,19 +81,16 @@ impl AniTitle{
         .filter_map(|(key , opt_val)| {
             opt_val.map(|val| (key , val))
         })
-
     }
 }
 
-
-const ANI_LIST_API  : &str = "https://graphql.anilist.co";
+const ANI_LIST_API_LINK  : &str = "https://graphql.anilist.co";
 
 // TODO : all this functions
-
 async fn fetch_anilist<T>(payload : &Value) -> Result<T , String> where T: DeserializeOwned{
     let client = Client::new();
     let response = match client
-        .post(ANI_LIST_API)
+        .post(ANI_LIST_API_LINK)
         .json(payload)
         .send().await{
             Ok(res) => res,
@@ -155,6 +150,7 @@ pub async fn ani_search(
     if let Ok(Some(id)) = search{
         println!("Got the thing here : {}" , id);
         return Ok(format!("Got the thing : {}" , id));
+        //  TODO 
         // need to consturct anidetail here
         // but what and how will i architecture that
         // idk will i show single thing
@@ -171,11 +167,16 @@ pub async fn ani_search(
                     english
                     native
                 }
-                bannerImage
                 coverImage{
                     large
                     extraLarge
                 }
+                startDate{
+                    year
+                    month
+                    day
+                }
+                bannerImage
                 description
                 episodes
                 status
@@ -216,5 +217,4 @@ pub async fn ani_search(
     }else{
         return Err(format!("Error : Reached Unreachable"));
     }
-
 }

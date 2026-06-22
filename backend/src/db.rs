@@ -69,6 +69,9 @@ pub async fn init_db(pool : &SqlitePool) -> Result<() , String>{
             status VARCHAR(18) NOT NULL,
             eps INTEGER DEFAULT NULL,
             des TEXT NOT NULL,
+            start_date INTEGER DEFAULT NULL,
+            start_month INTEGER DEFAULT NULL,
+            start_day INTEGER DEFAULT NULL,
             lst_updt DATETIME DEFAULT CURRENT_TIMESTAMP
         );")
         .execute(pool).await{
@@ -144,13 +147,16 @@ pub async fn insert_ani_details(ani_details : &AniDetails , pool : &SqlitePool) 
         Ok(ele) => ele,
         Err(error) => return Err(format!("Failed : {}", error)),
     };
-    if let Err(error) = query("INSERT INTO ani (id , status , eps , des , bImage , cImage ) VALUES (? , ? , ? , ? , ? , ? );")
+    if let Err(error) = query("INSERT INTO ani (id , status , eps , des , bImage , cImage , start_day , start_month , start_year ) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? );")
         .bind(&ani_details.id)
         .bind(&ani_details.status)
         .bind(&ani_details.ep)
         .bind(&ani_details.des)
         .bind(&ani_details.bimg)
         .bind(&ani_details.cimg.extra_large)
+        .bind(&ani_details.start_date.day)
+        .bind(&ani_details.start_date.month)
+        .bind(&ani_details.start_date.year)
         .execute(&mut *tx)
         .await{
             return Err(format!("Ani Error : {}", error));

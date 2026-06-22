@@ -53,6 +53,7 @@ async fn main() {
         .route_service("/login" , ServeFile::new("../frontend/pages/login.html"))
         .route_service("/signup" , ServeFile::new("../frontend/pages/signup.html"))
         .route_service("/reset" , ServeFile::new("../frontend/pages/reset.html"))
+        .route_service("/anihome" , ServeFile::new("../frontend/pages/anihome.html"))
         .route("/app/login", post(login_handler))
         .route("/app/signup", post(signup_handler))
         .route("/app/reset", post(reset_handler))

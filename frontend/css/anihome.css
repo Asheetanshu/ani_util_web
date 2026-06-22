@@ -1,0 +1,151 @@
+:root{
+  --carbon-black: #202022ff;
+  --wine-plum: #73313dff;
+  --bright-snow: #f8f6f7ff;
+  --pearl-beige: #e2d3b4ff;
+  --shadow-grey: #272935ff;
+  --eye-grey: #3f3f3fff;
+  --green : #99cf5bff;
+}
+*,*::before,*::after{
+  box-sizing : border-box;
+}
+nav{
+  margin : 0px;
+  justify-content : space-between; 
+  align-items : center;
+  display : flex;
+  flex-direction : row;
+  overflow : hidden;
+  width : 100%;
+  padding : 8px;
+  padding-bottom : 16px;
+  border-radius : 4px;
+  box-shadow : 0 4px 5px 2px var(--wine-plum);
+}
+
+body{
+  height : 100vh;
+  width : 100vw;
+  margin : 0;
+  display : flex;
+  background : var(--shadow-grey);
+  flex-direction : row;
+  align-items : center;
+}
+button{
+  outline : none;
+  border : none;
+  padding : 2px;
+  background : var(--shadow-grey);
+}
+input{
+  outline : transparent;
+  border : none;
+  padding : 8px;
+  background : var(--shadow-grey);
+}
+ul{
+  padding : 0px;
+}
+form:hover , form:focus{
+  box-shadow : 0px 0px 20px 3px var(--wine-plum);
+}
+
+main{
+  display : flex;
+  flex-direction : column;
+  justify-content : flex-start;
+  height : 100vh;
+  width : 100%;
+  overflow-y : auto;
+}
+  
+#main_content_wrapper{
+  display : flex;
+  flex-direction : row;
+  margin-top : 20px;
+  width : 100%;
+  flex-grow : 1;
+  overflow : hidden;
+}
+#search_collection{
+  display : flex;
+  flex-direction : row;
+  margin-left = 30px;
+  margin-top : 8px;
+  padding : 8px;
+  border-radius : 8px;
+}
+#search_icon_svg{
+  padding-top : 0px;
+}
+#search_collection:hover , #search_collection:focus-within{
+  box-shadow : 0px 0px 4px 1px var(--wine-plum);
+}
+#search_collection input{
+  padding-left : 8px;
+  color : var(--pearl-beige);
+  font-family : "Georgia";
+  transition : background 0.2s ease-in-out;
+}
+#search_collection:focus-within #search_icon_svg , #search_collection:hover #search_icon_svg{
+  color : var(--pearl-beige);
+}
+#ham_menu_button{
+  margin-top : 20px;
+}
+#ham_menu_button:hover , #ham_menu_button:focus{
+  color : var(--pearl-beige);
+}
+#profile_wrapper{
+  background : var(--pearl-beige);
+  width : 40px;
+  height : 40px;
+  border-radius : 50%;
+}
+#sidebar_section{
+  width : 70px;
+  height : 100vh;
+  flex-shrink : 0;
+  max-width : 60vw;
+  transition : all 0.2s ease-out;
+  overflow : hidden;
+  display : flex;
+  flex-direction : column;
+  align-items : center;
+}
+#sidebar a {
+  white-space : nowrap;
+  display : flex;
+  align-items : center;
+  text-decoration : none;
+  color : var(--pearl-beige);
+  margin-bottom : 24px;
+}
+
+#sidebar a:hover,#sidebar a:focus-within{
+  fill : currentColor;
+}
+#sidebar svg{
+  flex-shrink : 0;
+  height : 35px;
+  width : 35px;
+}
+.nav_item{
+  display : flex;
+  flex-direction : row;
+  align-items : center;
+}
+.sidebar_expanded {
+  width : 250px !important;
+  background : var(--eyegrey) !important;
+  
+  /* what i want here is to let the icons stay at the same place but when the thing expand they sort or attach to right side of the icons . So i have to think or you can help me step into the right direction*/
+}
+
+#ani_homebanner_wrapper{
+  width : 100%;
+  height : 60px;
+  background : var(--carbon-black);
+}
