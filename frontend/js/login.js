@@ -41,14 +41,12 @@ async function check_input(event){
     lgst.innerText = "Error: Please fill out both username and password.";
     return;
   }
-  else if (!is_valid_uname(uname)){
-    lgst.style.color = "var(--wine-plum)";
-    lgst.innerText = `Error: Username should only contain\n(a to z\t,A to Z\t,0 to 9)\n{char limit : 16}`;
-    return;
-  }
-  else if (!is_valid_passwd(passwd)){
-    lgst.style.color = "var(--wine-plum)";
-    lgst.innerText = `Error: Password should only contain\n(a to z\t,A to Z\t,0 to 9\tOr Special charecters "!@#$%^&*")\n{char limit : 32}`;
+  else if (!is_valid_uname(uname) || !is_valid_passwd(passwd)){
+    lgst.style.color = "var(--pearl-beige)";
+    lgst.innerHTML =
+      `<a href="/reset" style="color: var(--wine-plum); text-decoration: underline;">Reset</a>
+        | Check username or password |
+       <a href="/signup" style="color: var(--wine-plum); text-decoration: underline;">Sign up</a>`;
     return;
   }else {
     console.log(`Username:"${uname}"\nPassword:"${passwd}"\n`)
@@ -66,24 +64,23 @@ async function check_input(event){
         )
       });
 
-      const reply = await response.text();
-      if (reply === "1"){                                         // username & password both correct 
+      const reply = await response.json();
+      if (response.ok) {
         lgst.style.color = "var(--green)";
-        lgst.innerText = `You exist in my system.Login Successfull`;
-        window.location.href = "/"
-      }else if (reply === "2"){                                   // username only correct
+        lgst.textContent = "You exist in my system. Login successful.";
+        window.location.href = "/";
+      }
+      else if (response.status === 401) {
         lgst.style.color = "var(--pearl-beige)";
-        lgst.innerHTML = 
-        `Wrong Password | Try again or <a href="/reset"  
-        style = "color : var(--pearl-beige); text-decoration : underline;">
-          Reset Password</a>`;                                    // this reset page doesn't exist yet
-      }else if (reply === "3"){                                                      // nothing correct try to create account
+        lgst.innerHTML =
+          // reset stuff doesn't exists yet
+          `<a href="/reset" style="color: var(--wine-plum); text-decoration: underline;">Reset</a>
+         | Check username or password |
+         <a href="/signup" style="color: var(--wine-plum); text-decoration: underline;">Sign up</a>`;
+      }
+      else {
         lgst.style.color = "var(--wine-plum)";
-        lgst.innerHTML = `Username does not exists. Consider \n <a href="/signup" 
-        style = "color : var(--pearl-beige); text-decoration : underline;">Creating an Account</a>.`;
-      }else {
-        lgst.style.color = "var(--wine-plum)";
-        lgst.innerText = `Error : "${reply}"`;
+        lgst.textContent = `Error: ${reply.message}`;
       }
     }catch(network_error){
       lgst.style.color = "var(--wine-plum)";

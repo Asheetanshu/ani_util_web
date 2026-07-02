@@ -46,17 +46,13 @@ async function check_input(event){
     lgst.style.color = "var(--wine-plum)";
     lgst.innerText = `Error: Username should only contain\n(a to z\t,A to Z\t,0 to 9)\n{char limit : 16}`;
     return;
-  }else if (!is_valid_passwd(ogpasswd)){
+  }else if (!is_valid_passwd(ogpasswd) || !is_valid_passwd(passwd)){
     lgst.style.color = "var(--wine-plum)";
     lgst.innerText = `Error: Password should only contain\n(a to z\t,A to Z\t,0 to 9\tOr Special charecters "!@#$%^&*")\n{char limit : 32}`;
     return;
-  }else if (!is_valid_passwd(passwd)){
-    lgst.style.color = "var(--wine-plum)";
-    lgst.innerText = `Error: Confirm Password should only contain\n(a to z\t,A to Z\t,0 to 9\tOr Special charecters "!@#$%^&*")\n{char limit : 32}`;
-    return;
   }else if (ogpasswd !== passwd){
     lgst.style.color = "var(--pearl-beige)";
-    lgst.innerText = `Error: Password and Confirm Password Must Be same`;
+    lgst.innerText = `Error: Password and Confirm Password MUST Be same`;
     return;
   }else {
     console.log(`Username:"${uname}"\nPassword:"${passwd}"\nEmail:"${email}"\n`)
@@ -75,19 +71,19 @@ async function check_input(event){
         )
       });
 
-      const reply = await response.text();
-      if (reply === "1"){                                         // username & email valid 
+      const reply = await response.json();
+      if (response.ok){                                         // username & email valid 
         lgst.style.color = "var(--green)";
         lgst.innerHTML = `SignUp successfull.<a href="/login" style ="color : var(--pearl-beige); text-decoration : underline;">Login now</a>`;
-      }else if (reply === "2"){                                   // username not unique
+      }else if (reply.message === "uname not unique"){                                   // username not unique
         lgst.style.color = "var(--pearl-beige)";
         lgst.innerHTML = `Username not unique . Try again or <a href="/login" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
-      }else if (reply === "3"){                                   // email not unique
+      }else if (reply.message === "email not unique"){                                   // email not unique
         lgst.style.color = "var(--wine-plum)";
         lgst.innerHTML = `Email not unique. User already exists <a href="/login" style ="color : var(--pearl-beige); text-decoration : underline;">Login now ?</a>`;
       }else{
         lgst.style.color = "var(--wine-plum)";
-        lgst.innerText = `Internal Error : "${reply}"`;
+        lgst.innerText = `Internal Error : "${reply.message}"`;
       }
     }catch(network_error){
       lgst.style.color = "var(--wine-plum)";

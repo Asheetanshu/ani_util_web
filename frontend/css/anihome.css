@@ -144,8 +144,27 @@ main{
   /* what i want here is to let the icons stay at the same place but when the thing expand they sort or attach to right side of the icons . So i have to think or you can help me step into the right direction*/
 }
 
-#ani_homebanner_wrapper{
+.ani_homebanner_wrapper{
   width : 100%;
-  height : 60px;
+  height : 340px;
   background : var(--carbon-black);
+  overflow : hidden;
 }
+.ani_homebanner_wrapper img{
+  width : 100%;
+  height : 100%;
+  object-fit : cover;
+  -webkit-mask-image : linear-gradient(to up , rgba(0 , 0 , 0 , 1) 10% , rgba(0 , 0 ,0 , 0 ) 80%);
+}
+.ani_main_content{
+  max-width : 1200px;
+  margin : 0 auto;
+  /* margin-top : -100px; */
+  display : flex;
+  flex-direction : column;
+  gap : 20px;
+  padding : 0 20px;
+  position : relative;
+  z-index : 10;
+}
+

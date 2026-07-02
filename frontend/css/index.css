@@ -128,17 +128,6 @@ main{
   height : 40px;
   border-radius : 50%;
 }
-#sidebar_section{
-  width : 70px;
-  height : 100vh;
-  flex-shrink : 0;
-  max-width : 60vw;
-  transition : all 0.2s ease-out;
-  overflow : hidden;
-  display : flex;
-  flex-direction : column;
-  align-items : center;
-}
 #sidebar a {
   white-space : nowrap;
   display : flex;
@@ -156,21 +145,140 @@ main{
   height : 35px;
   width : 35px;
 }
-.nav_item{
-  display : flex;
-  flex-direction : row;
-  align-items : center;
+#sidebar_section {
+  width: 70px;
+  height: 100vh;
+  flex-shrink: 0;
+  max-width: 60vw;
+  transition: width 0.3s ease-out, background 0.3s ease-out;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Changed from center to anchor items left */
 }
-.sidebar_p{
 
+.nav_item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 17.5px; 
+  width: 100%;
 }
+
+/* Hide the text by default but prepare it for animation */
+.sidebar_p {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  font-family: "Georgia";
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.2s ease-out, margin 0.3s ease-out;
+}
+
+/* The Expanded State */
 .sidebar_expanded {
-  width : 250px !important;
-  background : var(--eyegrey) !important;
-  
-  /* what i want here is to let the icons stay at the same place but when the thing expand they sort or attach to right side of the icons . So i have to think or you can help me step into the right direction*/
+  width: 250px !important;
+  background: var(--carbon-black) !important;
 }
 
-.sidebar_expanded .sidebar_p{
-  
+/* When expanded, reveal the text smoothly next to the anchored icon */
+.sidebar_expanded .sidebar_p {
+  opacity: 1;
+  width: auto;
+  margin-left: 20px; /* Space between icon and text */
+}
+
+/* The Fluid Grid */
+#anime_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  padding: 20px;
+  flex-grow: 1;
+}
+
+/* The Card Frame */
+.ani_card {
+  display: flex;
+  flex-direction: column;
+  background: var(--carbon-black);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Glowing Hover Effect */
+.ani_card:hover, .ani_card:focus-within {
+  box-shadow: 0px 0px 15px 2px var(--wine-plum);
+  transform: translateY(-4px); /* Slight lift effect */
+}
+
+/* Image Container */
+.ani_card_img_wrapper {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  position: relative;
+  overflow: hidden;
+}
+
+.ani_card_img_wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Gradient Overlay inside the image */
+.ani_card_overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 10px 10px 10px;
+  background: linear-gradient(to top, rgba(32, 32, 34, 1) 0%, rgba(32, 32, 34, 0) 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* Badges floating on the image */
+.ani_badge {
+  background: var(--shadow-grey);
+  color: var(--pearl-beige);
+  font-family: "Georgia";
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 4px 1px var(--carbon-black);
+}
+
+/* Text formatting below the image */
+.ani_card_info {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ani_card_title {
+  color: var(--bright-snow);
+  font-family: "Georgia";
+  font-size: 16px;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ani_card_genres {
+  color: var(--pearl-beige);
+  font-family: "Georgia";
+  font-size: 12px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.8;
 }

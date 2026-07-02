@@ -4,8 +4,15 @@ use sqlx::{
 };
 
 use axum::{
+    http::StatusCode,
     Json,
     extract::State,
+};
+
+use axum_extra::extract::cookie::{
+    Cookie,
+    CookieJar,
+    SameSite,
 };
 
 use argon2::{
@@ -19,7 +26,8 @@ use argon2::{
     Argon2,
 };
 
-use serde::{self, Deserialize};
+use serde::{self, Deserialize , Serialize};
+use uuid::Uuid;
 
 #[derive(Deserialize, Debug)]
 pub struct LoginReq {
@@ -38,43 +46,93 @@ pub struct SiupReq {
 pub struct ResetReq{
     umail : String
 }
+#[derive(Serialize , Debug)]
+pub struct AppResponse<T:Serialize>{
+    pub message : String,
+    pub data : Option<T>
+}
+
+impl<T : Serialize> AppResponse<T> {
+    pub fn ok(message : &str , data : T) -> Self{
+        Self{
+            message : message.to_string(),
+            data : Some(data)
+        }
+    }
+    pub fn err(message : &str ) -> Self{
+        Self{
+            message : message.to_string(),
+            data : None
+        }
+    }
+}
+
 pub async fn login_handler(
     State(pool): State<sqlx::SqlitePool>,
+    jar : CookieJar,
     Json(lreq): Json<LoginReq>
-) -> String {
+) -> (StatusCode , CookieJar, Json<AppResponse<()>>){
     
-    // println!("---------------------------");
-    // println!("Login Req:\nUsername => \"{}\"\nPassword => \"{}\"" , lreq.uname, lreq.passwd);
-    // println!("---------------------------");
      
-    let row = match query("SELECT passwd FROM users WHERE uname = ?;")
+    let row = match query("SELECT id , passwd FROM users WHERE uname = ?;")
         .bind(&lreq.uname)
         .fetch_optional(&pool)
         .await
         {
             Ok(Some(row)) => row,
-            Ok(None) => return "3".to_string(),
+            Ok(None) => {
+                return (StatusCode::UNAUTHORIZED , jar , Json(AppResponse::err("Invalid Credentials")));
+            }
             Err(error) => {
                 println!("The db crashed : {}", error);
-                return error.to_string();
+                return (StatusCode::INTERNAL_SERVER_ERROR , jar , Json(AppResponse::err(&error.to_string())));
             }
         };
     let db_pass: String = row.get("passwd");
 
     match verify_pass(&lreq.passwd , &db_pass){
-        Ok(true) =>  return "1".to_string(),
-        Ok(false) => return "2".to_string(),
-        Err(error) => return error.to_string(),
+        Ok(true)    => {
+            let uid : i64 = row.get("id");
+            let sid = Uuid::now_v7().to_string();
+            let curr = time::Timestamp::now();
+            let exp_dur = time::Duration::days(3);
+            let exp = curr + exp_dur;
+            if let Err(error) = query(
+                "INSERT INTO sessions(uid, sid, created, expire )
+                VALUES (?, ?, ?, ?);"
+            ).bind(&uid)
+             .bind(&sid)
+             .bind(&curr.as_seconds())
+             .bind(&exp.as_seconds())
+             .execute(&pool).await{
+                 return (StatusCode::INTERNAL_SERVER_ERROR , jar , Json(AppResponse::err(&error.to_string())));
+            }
+
+            let cookie = Cookie::build(("sid" , sid.to_string()))
+                .path("/")
+                .http_only(true)
+                .same_site(SameSite::Lax)
+                .max_age(exp_dur)
+                .build();
+
+            let jar = jar.add(cookie);
+
+            return (StatusCode::OK , jar , Json(AppResponse::ok("login_successfull", ())));
+            
+        },
+        Ok(false)   => {
+            return (StatusCode::UNAUTHORIZED , jar , Json(AppResponse::err("Invalid Credentials")));
+        }
+        Err(error)  => {
+            return (StatusCode::INTERNAL_SERVER_ERROR , jar , Json(AppResponse::err(&error.to_string())));
+        }
     }
 }
 
 pub async fn signup_handler(
     State(pool): State<sqlx::SqlitePool>,
     Json(siupreq): Json<SiupReq>,
-) -> String {
-    // println!("---------------------------");
-    // println!("SingUp req with\nUsername : \"{}\"\nPassword : \"{}\"\nEmail : \"{}\"", siupreq.uname, siupreq.passwd, siupreq.email);
-    // println!("---------------------------");
+) -> (StatusCode , Json<AppResponse<()>>) {
 
     let unameq = query("SELECT id FROM users WHERE uname = ?;")
         .bind(&siupreq.uname)
@@ -82,9 +140,9 @@ pub async fn signup_handler(
         .await;
 
     if let Ok(Some(_)) = unameq {
-        return "2".to_string();
+        return (StatusCode::CONFLICT , Json(AppResponse::err("uname not unique")));
     } else if let Err(error) = unameq {
-        return error.to_string();
+        return (StatusCode::INTERNAL_SERVER_ERROR , Json(AppResponse::err(&error.to_string())));
     }
 
     let emailq = query("SELECT id FROM users WHERE email = ?;")
@@ -93,9 +151,9 @@ pub async fn signup_handler(
         .await;
 
     if let Ok(Some(_)) = emailq {
-        return "3".to_string();
+        return (StatusCode::CONFLICT , Json(AppResponse::err("email not unique")));
     } else if let Err(error) = emailq {
-        return error.to_string();
+        return (StatusCode::INTERNAL_SERVER_ERROR , Json(AppResponse::err(&error.to_string())));
     }
 
     let hpass : String;
@@ -103,7 +161,9 @@ pub async fn signup_handler(
     match make_pass_hash(&siupreq.passwd){
         Ok(e) => hpass = e,
         Err(error) => {
-            return format!("Error : password hashing failed due to this : {}" , error);
+            return (StatusCode::INTERNAL_SERVER_ERROR,
+               Json(AppResponse::err(&format!("Pass Hash failed : {}" , error)))
+               );
         }
     }
 
@@ -115,14 +175,14 @@ pub async fn signup_handler(
         .await;
 
     if let Err(error) = insertq {
-        return error.to_string();
+        return (StatusCode::INTERNAL_SERVER_ERROR , Json(AppResponse::err(&error.to_string())));
     }
     // verify email id here with otp thing idk...
     // i guess idk yet but we will do this later stage of the project
     // now is the time to built that smtp ? idk what it 
     // is called but that thing
 
-    "1".to_string()
+    (StatusCode::OK , Json(AppResponse::ok("Sign Up Successfull" , ())))
 }
 
 pub async fn reset_handler(
